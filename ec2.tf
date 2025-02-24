@@ -4,7 +4,7 @@ resource "aws_instance" "ansible_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
-  key_name               = "test-keypair"          # 事前に作成済みのキーペア
+  key_name               = "test-ansible-apache-key"          # 事前に作成済みキーペア
 
   # ユーザーデータで Ansible のインストール＆ Ansible Galaxy 経由で Apache ロール取得、プレイブック実行
   user_data = <<-EOF

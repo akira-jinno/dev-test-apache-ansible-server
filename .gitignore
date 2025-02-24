@@ -25,6 +25,7 @@ terraform.tfvars
 # 秘密鍵などの機密ファイル（例：.pem や .key ファイルは管理対象外に）
 *.pem
 *.key
+login-info.txt
 
 # ログファイル（開発時に生成されるログなど）
 *.log
