@@ -1,0 +1,31 @@
+# Terraform 関連
+
+# Terraform の状態ファイル（機密情報が含まれる可能性があるので、Git 管理から除外）
+*.tfstate
+*.tfstate.*
+
+# ローカルの Terraform プラグインやキャッシュディレクトリ
+.terraform/
+
+# クラッシュログ（Terraform 実行時に作成されるクラッシュログ）
+crash.log
+
+# オーバーライドファイル（ローカル専用設定用のファイルはコミットしない）
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# 機密情報を含む可能性のある変数定義ファイル（例：AWS のアクセスキーなど）
+terraform.tfvars
+
+
+# AWS 関連
+
+# 秘密鍵などの機密ファイル（例：.pem や .key ファイルは管理対象外に）
+*.pem
+*.key
+
+# ログファイル（開発時に生成されるログなど）
+*.log
+
