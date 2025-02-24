@@ -26,6 +26,7 @@ terraform.tfvars
 *.pem
 *.key
 login-info.txt
+memo.txt
 
 # ログファイル（開発時に生成されるログなど）
 *.log

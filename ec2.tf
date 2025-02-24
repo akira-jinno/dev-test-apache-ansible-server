@@ -4,9 +4,10 @@ resource "aws_instance" "ansible_server" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
-  key_name               = "test-ansible-apache-key"          # 事前に作成済みキーペア
+  key_name               = "test-ansible-apache-key"  # 事前に作成済みキーペア
 
-  # ユーザーデータで Ansible のインストール＆ Ansible Galaxy 経由で Apache ロール取得、プレイブック実行
+  # ユーザーデータで Ansible のインストール、Ansible Galaxy 経由で Apache ロール取得、
+  # 対象サーバー群用の inventory とプレイブックを作成
   user_data = <<-EOF
               #!/bin/bash
               # システムアップデートと必要パッケージのインストール
@@ -14,20 +15,23 @@ resource "aws_instance" "ansible_server" {
               yum install -y git python3-pip
               # pip3 で Ansible をインストール
               pip3 install ansible
-              # Ansible Galaxy から Apache ロール（geerlingguy.apache）を取得
+              # オプション：Ansible Galaxy から Apache ロール（geerlingguy.apache）を取得
               ansible-galaxy install geerlingguy.apache
-              # サンプルプレイブックを作成
+              # サンプルインベントリファイルの作成
+              cat <<EOL > /home/ec2-user/inventory.ini
+              [apache_servers]
+              # ここに対象サーバーのIPアドレスを追加してください
+              EOL
+              # サンプルプレイブックの作成（inventory.ini 内の apache_servers 対象）
               cat <<EOL > /home/ec2-user/playbook.yml
-              - name: Setup Apache using Ansible Galaxy role
-                hosts: localhost
+              - name: Setup Apache on remote servers using Ansible Galaxy role
+                hosts: apache_servers
                 become: yes
                 roles:
                   - geerlingguy.apache
               EOL
-              # ec2-user に所有権を変更
-              chown ec2-user:ec2-user /home/ec2-user/playbook.yml
-              # プレイブックの実行
-              ansible-playbook /home/ec2-user/playbook.yml
+              # inventory.ini と playbook.yml の所有権を ec2-user に変更
+              chown ec2-user:ec2-user /home/ec2-user/inventory.ini /home/ec2-user/playbook.yml
               EOF
 
   tags = {
